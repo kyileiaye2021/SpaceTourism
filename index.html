@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Airline</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://imengine.prod.srp.navigacloud.com/?uuid=59cf7e14-20a3-5029-a1ac-76aedd95a855&type=primary&q=72&width=1024');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        header {
+            background-color: #0073e6;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav {
+            background-color: #333;
+            color: white;
+            text-align: center;
+        }
+        nav ul {
+            position: sticky;
+                top: 0;
+                overflow:hidden;
+                background-color:lightgrey;
+            list-style-type: none;
+            padding: 0;
+        }
+        nav li {
+            display: inline;
+            margin-right: 20px;
+            
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        form{
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Space Adventures!</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Flights</a></li>
+            <li><a href="#">Destinations</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact Us</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2 style="color: white;">Book Your Flight To Space</h2>
+        <p style="color: white;">Choose your destination:</p>
+        <form>
+            <label for="destination">Destination:</label>
+            <input type="text" id="destination" name="destination" required><br><br>
+            <label for="departure">Departure Date:</label>
+            <input type="date" id="departure" name="departure" required><br><br>
+            <label for="return">Return Date:</label>
+            <input type="date" id="return" name="return" required><br><br>
+            <button type="submit">Search Flights</button>
+        </form>
+    </div>
+</body>
+</html>
