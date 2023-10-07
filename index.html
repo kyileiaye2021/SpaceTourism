@@ -1,3 +1,5 @@
+</html>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,18 +62,37 @@
             <li><a href="#">Contact Us</a></li>
         </ul>
     </nav>
-    <div class="container">
+    <div class="container" onsubmit="redirectToPage(); return false;">
         <h2 style="color: white;">Book Your Flight To Space</h2>
         <p style="color: white;">Choose your destination:</p>
-        <form>
-            <label for="destination">Destination:</label>
-            <input type="text" id="destination" name="destination" required><br><br>
-            <label for="departure">Departure Date:</label>
-            <input type="date" id="departure" name="departure" required><br><br>
-            <label for="return">Return Date:</label>
-            <input type="date" id="return" name="return" required><br><br>
-            <button type="submit">Search Flights</button>
-        </form>
+     
+          
+                <form id="flightForm" onsubmit="redirectToPage(); return false;">
+                    <label for="destination">Destination:</label>
+                <input type="text" id="destination" name="destination" required><br><br>
+                <label for="departure">Departure Date:</label>
+                <input type="date" id="departure" name="departure" required><br><br>
+                <label for="return">Return Date:</label>
+                <input type="date" id="return" name="return" required><br><br>
+                    <!-- form fields here -->
+                    <button type="submit" id="myButton" class="float-left submit-button">Search Flights</button>
+                </form>
+                
+                <script>
+                    function redirectToPage() {
+                        // Get the values from the form fields if needed
+                        var destination = document.getElementById('destination').value;
+                        var departure = document.getElementById('departure').value;
+                        var returnDate = document.getElementById('return').value;
+                
+                        // Perform any necessary validation or processing here
+                
+                        // Redirect to the desired page
+                        window.location.href = 'begin.html';
+                    }
+                </script>
+        
     </div>
+    
 </body>
 </html>
