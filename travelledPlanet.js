@@ -1,4 +1,4 @@
-const visitedPlanets = []
+const visitedPlanets = [];
 
 // Function to add a visited planet to the list
 function visitPlanet(planetName) {
@@ -21,4 +21,16 @@ function displayVisitedPlanets() {
     });
   }
 }
+
+
+// Example usage:
+visitPlanet("Mars");
+visitPlanet("Earth");
+visitPlanet("Venus");
+visitPlanet("Mars");
+visitPlanet("Jupiter");
+
+console.log("Displaying Visited Planets:");
+displayVisitedPlanets();
+
 

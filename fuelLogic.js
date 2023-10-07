@@ -1,51 +1,57 @@
-const fuel = {
-    fuelVolume : 1000,
-    fuelConsumptionRate : 10, //Example
+let fuelVolume =  0;
+let fuelConsumptionRate = 0;
+let startFuelVolume = 0; 
+
+function setFuel(newFuelVolume) {
+    fuelVolume = newFuelVolume;
+    startFuelVolume = newFuelVolume;
+    console.log(`Current fuel volume is ${fuelVolume} liters and the starting fuel is ${startFuelVolume} litres`); //Test code
 }
-
-function intializeFuel(fuelVolume){
-    let fuelStart = this.fuelVolume;
-}
-
-
-  // let distanceFromEarth  = (spaceshipX^2 + spaceshipY^2)^(1/2); 
-  // let distanceFromPlanet = planetXY - distanceFromEarth;
-   // let minFuel =  int(distanceFromPlanet/fuelConsumptionRate);
-
-function calculateFuelUsage(distanceFromEarth) {
-    return fuel.fuelVolume - fuel.fuelConsumptionRate * distanceFromEarth;
-}
-
 
 function displayFuel(){
-    console.log(`Current fuel volume is ${fuel.fuelVolume} liters`);
+    console.log(`Current fuel volume is ${fuelVolume} liters`);
 }
 
 function refuel(refuelVolume){
+    if((refuelVolume + fuelVolume) <= startFuelVolume){
     fuelVolume += refuelVolume;
+    displayFuel();
+    }else if(fuelVolume == startFuelVolume){
+        console.log(`Fuel tank is currently full!`)
+    }else{
+        fuelVolume = startFuelVolume;
+        console.log(`Fuel tank is too small! Fuel refilled to ${startFuelVolume}!`);
+    }
+}
+
+function setFuelConsumptionRate(newFuelConsumptionRate){
+    fuelConsumptionRate = newFuelConsumptionRate;
+    console.log(`Current fuel consumption rate is ${fuelConsumptionRate} liters`); //Test code
+}
+
+
+//Calculate fuel needed for travel to planet
+function calculateFuelUsage(distanceFromEarth) {
+    return distanceFromEarth/fuelConsumptionRate;
+}
+
+//Checks if spaceship has enough fuel to make the journey to planet
+function isTravelOk(){
+    if(fuelVolume >= calculateFuelUsage(distanceFromEarth)){
+        return true;
+    }else {
+        console.log('You do not have enough fuel to iniiate this journey!');
+        return false;
+    }
+}
+
+function useFuel(planet){
+    if(!isTravelOk()){
+        return;
+    }else{
+        fuelVolume -= calculateFuelUsage(planet.distance);
+    }
     displayFuel();
 }
 
-function fuelLow(fuelStart, fuelVolume) {
-    if(fuelVolume / fuelStart  <= 1/10) {
-        console.log(`Your fuel volume is less than 10% (${fuel.fuelVolume}) ! Please refuel now!`);
-        return true;
-    }
-}
 
-function fuelInsufficient(planet){
-    if(fuelLow(fuelStart, fuelVolume) == true){
-        console.log('You do not have enough fuel to iniiate this journey!');
-        console.log()
-        return true;
-    }
-}
-
-function simulateJourney(distanceFromEarth){
-   
-    
-}
-
-intializeFuel(fuel.fuelVolume);
-calculateFuelUsage(1000);
-displayFuel();
