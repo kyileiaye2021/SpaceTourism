@@ -18,7 +18,6 @@ function displayFuel(){
     console.log('Current fuel volume is ${fuelLevel.fuelVolume} liters');
 }
 
-
 function refuel(refuelVolume){
     fuelVolume += refuelVolume;
     displayFuel();
