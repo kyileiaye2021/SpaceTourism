@@ -29,6 +29,9 @@ let dy = 0;
 let lastDirectionX = 0;
 let lastDirectionY = 0;
 
+// Rotation angle
+let rotationAngle = 0;
+
 // Function to draw the circle
 function drawCircle(circX, circY, rad, color) {
     ctx.beginPath();
@@ -41,7 +44,25 @@ function drawCircle(circX, circY, rad, color) {
 function drawSpaceship() {
     const spaceshipImg = new Image();
     spaceshipImg.src = "rocket-th.png";
-    ctx.drawImage(spaceshipImg, spaceshipX, spaceshipY, spaceshipWidth, spaceshipHeight);
+    
+    // Calculate the transformation origin
+    const originX = spaceshipX + (spaceshipWidth / 2);
+    const originY = spaceshipY + (spaceshipHeight / 2);
+    
+    // Save the current canvas state
+    ctx.save();
+    
+    // Translate the context to the origin
+    ctx.translate(originX, originY);
+    
+    // Rotate the context based on the angle of rotation
+    ctx.rotate(rotationAngle + Math.PI/4); // Corrected
+    
+    // Draw the spaceship centered at the transformed origin
+    ctx.drawImage(spaceshipImg, -spaceshipWidth / 2, -spaceshipHeight / 2, spaceshipWidth, spaceshipHeight);
+    
+    // Restore the canvas state
+    ctx.restore();
 }
 
 function updateCanvas() {
@@ -50,6 +71,14 @@ function updateCanvas() {
 
     // Draw the circle
     drawCircle(planetCircleA, planetCircleB, 70, "#ffcc00");
+    
+    // Calculate the angle of rotation based on the direction
+    if (lastDirectionX !== 0 || lastDirectionY !== 0) {
+        rotationAngle = Math.atan2(lastDirectionY, lastDirectionX) + 90;
+    } else {
+        rotationAngle = 0; // Reset rotation angle when not moving
+    }
+    
     drawSpaceship();
     checkCollision();
 
