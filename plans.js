@@ -1,4 +1,4 @@
-{
+
     const form = document.querySelector('form');
     var arr = [];
     form.addEventListener('submit', (e) => {
@@ -11,4 +11,3 @@
 
     });
 
-}

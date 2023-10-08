@@ -1,3 +1,7 @@
+var num = 0;
+export function changeOnlyPlanet(radius, page, theImage)
+{
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -14,11 +18,11 @@ const stopThreshold = 0.5; // Threshold for stopping
 const maxVelocity = 5; // Maximum velocity
 
 // Planet
-let planetCircleX = canvas.width - 50;
-let planetCircleY = canvas.height / 2;
-const planetCircleRadius = 50;
+//let planetCircleX = canvas.width - 50;
+//let planetCircleY = canvas.height / 2;
+//const planetCircleRadius = 50;
 
-let planetCircleA = canvas.width - 200;
+let planetCircleA = canvas.width - 300;
 let planetCircleB = canvas.height / 3;
 
 // Velocity variables for X and Y directions
@@ -33,12 +37,47 @@ let lastDirectionY = 0;
 let rotationAngle = 0;
 
 // Function to draw the circle
-function drawCircle(circX, circY, rad, color) {
-    ctx.beginPath();
-    ctx.arc(circX, circY, rad, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-    ctx.closePath();
+function drawCircle(circX, circY) {
+    //ctx.beginPath();
+   // ctx.arc(circX, circY, radius, 0, Math.PI * 2);
+    //ctx.fillStyle = colord;
+    //ctx.fill();
+    //ctx.closePath();
+    const planetImg = new Image();
+    planetImg.src = theImage;
+    
+    // Calculate the transformation origin
+    var originXPlanet = circX;
+    var originYPlanet = circY;
+    
+    // Save the current canvas state
+    ctx.save();
+    
+    // Translate the context to the origin
+    ctx.translate(originXPlanet, originYPlanet);
+    
+    // Rotate the context based on the angle of rotation
+    //ctx.rotate(rotationAngle + Math.PI/4); // Corrected
+    
+    // Draw the spaceship centered at the transformed origin
+    ctx.drawImage(planetImg, -radius / 2, -radius / 2, radius, radius);
+    
+    // Restore the canvas state
+    ctx.restore();
+}
+
+function increaseNum() {
+    // Check if 'num' is stored in local storage
+    if (localStorage.getItem('num')) {
+        // If it is, parse the value and increase it by 1
+        let num = parseInt(localStorage.getItem('num'));
+        num += 1;
+        localStorage.setItem('num', num);
+    } else {
+        // If it's not, initialize 'num' to 1
+        localStorage.setItem('num', 1);
+    }
+    console.log(num);
 }
 
 function drawSpaceship() {
@@ -69,8 +108,10 @@ function updateCanvas() {
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+   
+
     // Draw the circle
-    drawCircle(planetCircleA, planetCircleB, 70, "#ffcc00");
+    drawCircle(planetCircleA, planetCircleB);
     
     // Calculate the angle of rotation based on the direction
     if (lastDirectionX !== 0 || lastDirectionY !== 0) {
@@ -106,12 +147,17 @@ function updateCanvas() {
     spaceshipX += dx;
     spaceshipY += dy;
 
+    //update the planet's position
+   // planetCircleA -= dx;
+
     // Keep the spaceship within the canvas boundaries
     if (spaceshipX < 0) {
-        spaceshipX = 0;
+        dx = 0;
+        window.location.href = page;
     }
     if (spaceshipX + spaceshipWidth > canvas.width) {
-        spaceshipX = canvas.width - spaceshipWidth;
+        //spaceshipX = canvas.width - spaceshipWidth;
+        window.location.href = page;
     }
     if (spaceshipY < 0) {
         spaceshipY = 0;
@@ -119,6 +165,7 @@ function updateCanvas() {
     if (spaceshipY + spaceshipHeight > canvas.height) {
         spaceshipY = canvas.height - spaceshipHeight;
     }
+    
 }
 function openModal() {
     document.getElementById('myModal').style.display = "block";
@@ -126,10 +173,12 @@ function openModal() {
 
 function closeModal() {
     document.getElementById('myModal').style.display = "none";
+    
 }
 
 // Event listener for close button
 document.querySelector(".close").addEventListener("click", closeModal);
+
 
     
 function checkCollision() {
@@ -140,11 +189,10 @@ function checkCollision() {
     );
 
     // Check if the distance is less than the sum of the spaceship's and planet's radii
-    if (distance < spaceshipWidth / 2 + planetCircleRadius) {
+    if (distance < spaceshipWidth / 2 + radius) {
         // Collision detected! Navigate to a new page
-        //window.location.href = "planetwindow.html";
+       // increaseNum();
         openModal();
-
     }
 }
 
@@ -198,3 +246,4 @@ setInterval(() => {
     updateCanvas();
     applyLastDirection();
 }, 10);
+}
