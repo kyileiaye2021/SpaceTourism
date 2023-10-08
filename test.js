@@ -268,7 +268,7 @@ function checkCollision() {
        // increaseNum();
        if(isEarth)
        {
-        window.location.href = "website.html";
+        window.location.href = "welcomeback.html";
        }
        else{
         openModal();
