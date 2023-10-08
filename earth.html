@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You are on Saturn idk</title>
+</head>
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal-content {
+        font-size: 30px;
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 70%;
+    }
+    
+</style>
+<body>
+    <style>
+        body {
+          background-image: url('night.jpeg');
+        }
+        </style>
+    <canvas id="gameCanvas" width="1920" height="1080"></canvas>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>
+            <h1>Mars (Red Planet)</h1>
+            <ul>
+                <li> <b>Distance: </b> 48,678,219 miles </li>
+                <li> <b>Temperature: </b> Highest: 70°F(20°C) | Lowest: -225°F(-153°C) </li>
+                <li> <b>Size:</b> Radius of 2,106 miles</li>
+                <li><b>Unique Features:</b>A hill on Mars with a bear shape <a href="https://www.nasa.gov/image-article/a-bear-on-mars/">To Learn More</a></li>
+            </ul>
+          </p>
+        </div>
+      </div>
+
+    <script type="module">
+    import * as planetFunctions from './test.js';
+       
+       planetFunctions.changeOnlyPlanet(100, "mars.html", "earth.png", "venus.html", true);
+
+       
+    </script>
+    
+</body>
+</html>

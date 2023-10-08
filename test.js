@@ -1,12 +1,12 @@
 var num = 0;
-export function changeOnlyPlanet(radius, page, theImage)
+export function changeOnlyPlanet(radius, pageRight, theImage, pageLeft)
 {
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // Spaceship
-let spaceshipX = canvas.width / 2;
+let spaceshipX = 0;
 let spaceshipY = canvas.height / 2;
 const spaceshipWidth = 30;
 const spaceshipHeight = 30;
@@ -152,12 +152,17 @@ function updateCanvas() {
 
     // Keep the spaceship within the canvas boundaries
     if (spaceshipX < 0) {
-        dx = 0;
-        window.location.href = page;
+        window.location.href = pageLeft;
+        
+        if(compareStrings(pageLeft.toUpperCase(), dead.toUpperCase()))
+        {
+            dx = 0;
+        }
+        
     }
     if (spaceshipX + spaceshipWidth > canvas.width) {
         //spaceshipX = canvas.width - spaceshipWidth;
-        window.location.href = page;
+        window.location.href = pageRight;
     }
     if (spaceshipY < 0) {
         spaceshipY = 0;
