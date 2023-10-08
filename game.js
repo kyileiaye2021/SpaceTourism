@@ -32,7 +32,66 @@ let lastDirectionY = 0;
 // Rotation angle
 let rotationAngle = 0;
 
-// Function to draw the circle
+// Particle variables
+const particles = [];
+const maxParticles = 50;
+
+// Function to create a new particle with an offset
+function createParticle() {
+    // Calculate an offset distance behind the spaceship
+    const offsetDistance = spaceshipWidth + 20 ; // Adjust as needed
+
+    // Calculate the position of the particle based on the rotation angle
+    const particleX = spaceshipX + spaceshipWidth / 2 - offsetDistance * Math.sin(rotationAngle);
+    const particleY = spaceshipY + spaceshipHeight / 2 + offsetDistance * Math.cos(rotationAngle);
+
+    const particle = {
+        x: particleX,
+        y: particleY,
+        radius: Math.random() * 2 + 1, // Random radius between 1 and 3
+        color: "orange",
+        velocityX: (Math.random() - 0.5) * 2, // Random horizontal velocity
+        velocityY: Math.random() * -2, // Random upward velocity
+        life: 30, // Number of frames the particle will live
+    };
+
+    particles.push(particle);
+}
+
+
+// Function to update particles
+function updateParticles() {
+    for (let i = 0; i < particles.length; i++) {
+        const particle = particles[i];
+
+        // Update particle position
+        particle.x += particle.velocityX;
+        particle.y += particle.velocityY;
+
+        // Decrease particle life
+        particle.life--;
+
+        // Remove dead particles
+        if (particle.life <= 0) {
+            particles.splice(i, 1);
+            i--;
+        }
+    }
+}
+
+// Function to draw particles
+function drawParticles() {
+    for (let i = 0; i < particles.length; i++) {
+        const particle = particles[i];
+
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = particle.color;
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
 function drawCircle(circX, circY, rad, color) {
     ctx.beginPath();
     ctx.arc(circX, circY, rad, 0, Math.PI * 2);
@@ -56,9 +115,9 @@ function drawSpaceship() {
     ctx.translate(originX, originY);
     
     // Rotate the context based on the angle of rotation
-    ctx.rotate(rotationAngle ); // Corrected
+    ctx.rotate(rotationAngle); // Corrected
     
-    ctx.scale(5,5);
+    ctx.scale(5, 5);
     
     // Draw the spaceship centered at the transformed origin
     ctx.drawImage(spaceshipImg, -spaceshipWidth / 2, -spaceshipHeight / 2, spaceshipWidth, spaceshipHeight);
@@ -76,14 +135,20 @@ function updateCanvas() {
     
     // Calculate the angle of rotation based on the direction
     if (lastDirectionX !== 0 || lastDirectionY !== 0) {
-        rotationAngle = Math.atan2(lastDirectionY, lastDirectionX) +Math.PI/2;
+        rotationAngle = Math.atan2(lastDirectionY, lastDirectionX) + Math.PI / 2;
+
+        // Create particles for the spaceship's exhaust
+        for (let i = 0; i < 3; i++) {
+            createParticle();
+        }
     } 
     
     drawSpaceship();
     checkCollision();
 
-    // Draw the combustion effect
-    drawCombustion();
+    // Draw particles
+    updateParticles();
+    drawParticles();
 
     // Update the spaceship's velocity based on acceleration for X and Y directions
     if (Math.abs(dx) < maxVelocity) {
@@ -278,3 +343,6 @@ setInterval(() => {
     updateCombustion();
     applyLastDirection();
 }, 10);
+
+
+
