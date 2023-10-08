@@ -1,5 +1,5 @@
 var num = 0;
-export function changeOnlyPlanet(radius, pageRight, theImage, pageLeft)
+export function changeOnlyPlanet(radius, pageRight, theImage, pageLeft, isEarth)
 {
 
 const canvas = document.getElementById("gameCanvas");
@@ -35,6 +35,65 @@ let lastDirectionY = 0;
 
 // Rotation angle
 let rotationAngle = 0;
+
+// Particle variables
+const particles = [];
+const maxParticles = 50;
+
+// Function to create a new particle with an offset
+function createParticle() {
+    // Calculate an offset distance behind the spaceship
+    const offsetDistance = spaceshipWidth + 20 ; // Adjust as needed
+
+    // Calculate the position of the particle based on the rotation angle
+    const particleX = spaceshipX + spaceshipWidth / 2 - offsetDistance * Math.sin(rotationAngle);
+    const particleY = spaceshipY + spaceshipHeight / 2 + offsetDistance * Math.cos(rotationAngle);
+
+    const particle = {
+        x: particleX,
+        y: particleY,
+        radius: Math.random() * 2 + 1, // Random radius between 1 and 3
+        color: "orange",
+        velocityX: (Math.random() - 0.5) * 2, // Random horizontal velocity
+        velocityY: Math.random() * -2, // Random upward velocity
+        life: 30, // Number of frames the particle will live
+    };
+
+    particles.push(particle);
+}
+
+// Function to update particles
+function updateParticles() {
+    for (let i = 0; i < particles.length; i++) {
+        const particle = particles[i];
+
+        // Update particle position
+        particle.x += particle.velocityX;
+        particle.y += particle.velocityY;
+
+        // Decrease particle life
+        particle.life--;
+
+        // Remove dead particles
+        if (particle.life <= 0) {
+            particles.splice(i, 1);
+            i--;
+        }
+    }
+}
+
+// Function to draw particles
+function drawParticles() {
+    for (let i = 0; i < particles.length; i++) {
+        const particle = particles[i];
+
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = particle.color;
+        ctx.fill();
+        ctx.closePath();
+    }
+}
 
 // Function to draw the circle
 function drawCircle(circX, circY) {
@@ -82,7 +141,8 @@ function increaseNum() {
 
 function drawSpaceship() {
     const spaceshipImg = new Image();
-    spaceshipImg.src = "rocket-th.png";
+    spaceshipImg.src = "SaturnVRocket.png";
+
     
     // Calculate the transformation origin
     const originX = spaceshipX + (spaceshipWidth / 2);
@@ -95,7 +155,9 @@ function drawSpaceship() {
     ctx.translate(originX, originY);
     
     // Rotate the context based on the angle of rotation
-    ctx.rotate(rotationAngle + Math.PI/4); // Corrected
+    ctx.rotate(rotationAngle); // Corrected
+    
+    ctx.scale(5, 5);
     
     // Draw the spaceship centered at the transformed origin
     ctx.drawImage(spaceshipImg, -spaceshipWidth / 2, -spaceshipHeight / 2, spaceshipWidth, spaceshipHeight);
@@ -115,13 +177,20 @@ function updateCanvas() {
     
     // Calculate the angle of rotation based on the direction
     if (lastDirectionX !== 0 || lastDirectionY !== 0) {
-        rotationAngle = Math.atan2(lastDirectionY, lastDirectionX) + 90;
-    } else {
-        rotationAngle = 0; // Reset rotation angle when not moving
-    }
+        rotationAngle = Math.atan2(lastDirectionY, lastDirectionX) + Math.PI / 2;
+
+        // Create particles for the spaceship's exhaust
+        for (let i = 0; i < 3; i++) {
+            createParticle();
+        }
+    } 
     
     drawSpaceship();
     checkCollision();
+
+    // Draw particles
+    updateParticles();
+    drawParticles();
 
     // Update the spaceship's velocity based on acceleration for X and Y directions
     if (Math.abs(dx) < maxVelocity) {
@@ -197,7 +266,13 @@ function checkCollision() {
     if (distance < spaceshipWidth / 2 + radius) {
         // Collision detected! Navigate to a new page
        // increaseNum();
+       if(isEarth)
+       {
+        window.location.href = "website.html";
+       }
+       else{
         openModal();
+       }
     }
 }
 
@@ -207,7 +282,16 @@ const keys = {}; // Object to track key states
 function handleKeyDown(event) {
     keys[event.key] = true;
     calculateVelocity();
+
+     // Set isCombusting to true when an arrow key is pressed
+     if (event.key.includes("Arrow")) {
+        isCombusting = true;
+        addCombustionPosition(); // Add a new combustion position
+    }
+
 }
+
+
 
 function handleKeyUp(event) {
     keys[event.key] = false;
@@ -242,6 +326,73 @@ function applyLastDirection() {
     }
 }
 
+
+// Combustion effect variables
+let isCombusting = false;
+let combustionFrame = 0;
+const maxCombustionFrames = 30; // Number of frames to display the combustion effect
+const combustionPositions = [];
+
+
+// Function to add a new combustion position
+function addCombustionPosition() {
+    // Define the distance from the spaceship's center to the combustion point
+    const combustionDistance = 20; // Adjust as needed
+
+    // Calculate the position of the combustion effect based on the rotation angle
+    const combustionX = spaceshipX + spaceshipWidth / 2 + combustionDistance * Math.cos(rotationAngle);
+    const combustionY = spaceshipY + spaceshipHeight / 2 + combustionDistance * Math.sin(rotationAngle);
+
+    // Add the position to the array
+    combustionPositions.push({ x: combustionX, y: combustionY, frame: 0 });
+}
+
+// Function to draw combustion effect
+function drawCombustion() {
+    if (isCombusting) {
+        // Define the distance from the spaceship's center to the combustion point
+        const combustionDistance = 100; // Adjust as needed
+
+        // Calculate the position of the combustion effect based on the rotation angle
+        const combustionX = spaceshipX + spaceshipWidth / 2 - combustionDistance * Math.sin(rotationAngle);
+        const combustionY = spaceshipY + spaceshipHeight / 2 + combustionDistance * Math.cos(rotationAngle);
+
+        for (let i = 0; i < combustionPositions.length; i++) {
+            const combustion = combustionPositions[i];
+    
+            if (combustion.frame <= maxCombustionFrames) {
+                
+        // You can customize the combustion effect appearance here
+        ctx.beginPath();
+        ctx.arc(combustionX, combustionY, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "orange";
+        ctx.fill();
+        ctx.closePath();
+
+        combustion.frame++;
+        } else {
+            // Remove the combustion position after it exceeds the frame limit
+            combustionPositions.splice(i, 1);
+            i--;
+        }
+    }
+    }
+}
+
+
+// Function to update combustion effect
+function updateCombustion() {
+    if (isCombusting) {
+        combustionFrame++;
+
+        // Reset combustion effect after a certain number of frames
+        if (combustionFrame >= maxCombustionFrames) {
+            isCombusting = false;
+            combustionFrame = 0;
+        }
+    }
+}
+
 // Event listeners
 document.addEventListener("keydown", handleKeyDown);
 document.addEventListener("keyup", handleKeyUp);
@@ -249,6 +400,7 @@ document.addEventListener("keyup", handleKeyUp);
 // Game loop
 setInterval(() => {
     updateCanvas();
+    updateCombustion();
     applyLastDirection();
 }, 10);
 }
