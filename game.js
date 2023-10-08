@@ -1,3 +1,4 @@
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -113,37 +114,15 @@ function handleKeyUp(event) {
 }
 
 //Calculate distance between two circles
-
+var selectedPlanets = [];
 // Event listeners
 document.addEventListener("keydown", handleKeyDown);
 document.addEventListener("keyup", handleKeyUp);
+const form = document.querySelector('form');
+var arr = [];
 
-document.addEventListener("DOMContentLoaded", function() {
-    // Get the form element
-    const form = document.getElementById("flightForm");
 
-    // Add a submit event listener to the form
-    form.addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent the default form submission behavior
-
-        // Get the input values
-        const destination = document.getElementById("destination").value;
-        const departure = document.getElementById("departure").value;
-        const returnDate = document.getElementById("return").value;
-
-        // Create an array to store the input values
-        const formData = {
-            destination: destination,
-            departure: departure,
-            returnDate: returnDate
-        };
-
-        // You can now access the formData object to access the input values
-        console.log(formData.destination);
-
-        // Here, you can perform further actions like sending the data to a server or processing it as needed
-    });
-});
+            
 
 // Game loop
 setInterval(updateCanvas, 10);
