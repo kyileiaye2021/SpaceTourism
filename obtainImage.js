@@ -1,4 +1,4 @@
-function fetchRandomImage() {
+export function fetchRandomImage() {
     const searchQuery = 'saturn'; // Your search query
     const apiUrl = `https://images-api.nasa.gov/search?q=${searchQuery}&media_type=image`;
 
@@ -29,5 +29,3 @@ function fetchRandomImage() {
 
 // Call the function to fetch and display a random image when the page loads
 window.addEventListener('load', fetchRandomImage);
-
-export {fetchRandomImage};
