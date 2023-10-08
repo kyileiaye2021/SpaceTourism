@@ -1,3 +1,7 @@
+var num = 0;
+export function changeOnlyPlanet(radius, page, theImage)
+{
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -14,11 +18,11 @@ const stopThreshold = 0.5; // Threshold for stopping
 const maxVelocity = 5; // Maximum velocity
 
 // Planet
-let planetCircleX = canvas.width - 50;
-let planetCircleY = canvas.height / 2;
-const planetCircleRadius = 50;
+//let planetCircleX = canvas.width - 50;
+//let planetCircleY = canvas.height / 2;
+//const planetCircleRadius = 50;
 
-let planetCircleA = canvas.width - 200;
+let planetCircleA = canvas.width - 300;
 let planetCircleB = canvas.height / 3;
 
 // Velocity variables for X and Y directions
@@ -33,17 +37,52 @@ let lastDirectionY = 0;
 let rotationAngle = 0;
 
 // Function to draw the circle
-function drawCircle(circX, circY, rad, color) {
-    ctx.beginPath();
-    ctx.arc(circX, circY, rad, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-    ctx.closePath();
+function drawCircle(circX, circY) {
+    //ctx.beginPath();
+   // ctx.arc(circX, circY, radius, 0, Math.PI * 2);
+    //ctx.fillStyle = colord;
+    //ctx.fill();
+    //ctx.closePath();
+    const planetImg = new Image();
+    planetImg.src = theImage;
+    
+    // Calculate the transformation origin
+    var originXPlanet = circX;
+    var originYPlanet = circY;
+    
+    // Save the current canvas state
+    ctx.save();
+    
+    // Translate the context to the origin
+    ctx.translate(originXPlanet, originYPlanet);
+    
+    // Rotate the context based on the angle of rotation
+    //ctx.rotate(rotationAngle + Math.PI/4); // Corrected
+    
+    // Draw the spaceship centered at the transformed origin
+    ctx.drawImage(planetImg, -radius / 2, -radius / 2, radius, radius);
+    
+    // Restore the canvas state
+    ctx.restore();
+}
+
+function increaseNum() {
+    // Check if 'num' is stored in local storage
+    if (localStorage.getItem('num')) {
+        // If it is, parse the value and increase it by 1
+        let num = parseInt(localStorage.getItem('num'));
+        num += 1;
+        localStorage.setItem('num', num);
+    } else {
+        // If it's not, initialize 'num' to 1
+        localStorage.setItem('num', 1);
+    }
+    console.log(num);
 }
 
 function drawSpaceship() {
     const spaceshipImg = new Image();
-    spaceshipImg.src = "SaturnVRocket.png";
+    spaceshipImg.src = "rocket-th.png";
     
     // Calculate the transformation origin
     const originX = spaceshipX + (spaceshipWidth / 2);
@@ -56,9 +95,7 @@ function drawSpaceship() {
     ctx.translate(originX, originY);
     
     // Rotate the context based on the angle of rotation
-    ctx.rotate(rotationAngle ); // Corrected
-    
-    ctx.scale(5,5);
+    ctx.rotate(rotationAngle + Math.PI/4); // Corrected
     
     // Draw the spaceship centered at the transformed origin
     ctx.drawImage(spaceshipImg, -spaceshipWidth / 2, -spaceshipHeight / 2, spaceshipWidth, spaceshipHeight);
@@ -71,19 +108,20 @@ function updateCanvas() {
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+   
+
     // Draw the circle
-    drawCircle(planetCircleA, planetCircleB, 70, "#ffcc00");
+    drawCircle(planetCircleA, planetCircleB);
     
     // Calculate the angle of rotation based on the direction
     if (lastDirectionX !== 0 || lastDirectionY !== 0) {
-        rotationAngle = Math.atan2(lastDirectionY, lastDirectionX) +Math.PI/2;
-    } 
+        rotationAngle = Math.atan2(lastDirectionY, lastDirectionX) + 90;
+    } else {
+        rotationAngle = 0; // Reset rotation angle when not moving
+    }
     
     drawSpaceship();
     checkCollision();
-
-    // Draw the combustion effect
-    drawCombustion();
 
     // Update the spaceship's velocity based on acceleration for X and Y directions
     if (Math.abs(dx) < maxVelocity) {
@@ -109,12 +147,17 @@ function updateCanvas() {
     spaceshipX += dx;
     spaceshipY += dy;
 
+    //update the planet's position
+   // planetCircleA -= dx;
+
     // Keep the spaceship within the canvas boundaries
     if (spaceshipX < 0) {
-        spaceshipX = 0;
+        dx = 0;
+        window.location.href = page;
     }
     if (spaceshipX + spaceshipWidth > canvas.width) {
-        spaceshipX = canvas.width - spaceshipWidth;
+        //spaceshipX = canvas.width - spaceshipWidth;
+        window.location.href = page;
     }
     if (spaceshipY < 0) {
         spaceshipY = 0;
@@ -122,6 +165,7 @@ function updateCanvas() {
     if (spaceshipY + spaceshipHeight > canvas.height) {
         spaceshipY = canvas.height - spaceshipHeight;
     }
+    
 }
 function openModal() {
     document.getElementById('myModal').style.display = "block";
@@ -129,10 +173,12 @@ function openModal() {
 
 function closeModal() {
     document.getElementById('myModal').style.display = "none";
+    
 }
 
 // Event listener for close button
 document.querySelector(".close").addEventListener("click", closeModal);
+
 
     
 function checkCollision() {
@@ -143,11 +189,10 @@ function checkCollision() {
     );
 
     // Check if the distance is less than the sum of the spaceship's and planet's radii
-    if (distance < spaceshipWidth / 2 + planetCircleRadius) {
+    if (distance < spaceshipWidth / 2 + radius) {
         // Collision detected! Navigate to a new page
-        //window.location.href = "planetwindow.html";
+       // increaseNum();
         openModal();
-
     }
 }
 
@@ -157,13 +202,6 @@ const keys = {}; // Object to track key states
 function handleKeyDown(event) {
     keys[event.key] = true;
     calculateVelocity();
-
-     // Set isCombusting to true when an arrow key is pressed
-     if (event.key.includes("Arrow")) {
-        isCombusting = true;
-        addCombustionPosition(); // Add a new combustion position
-    }
-
 }
 
 function handleKeyUp(event) {
@@ -199,75 +237,6 @@ function applyLastDirection() {
     }
 }
 
-
-
-
-// Combustion effect variables
-let isCombusting = false;
-let combustionFrame = 0;
-const maxCombustionFrames = 30; // Number of frames to display the combustion effect
-const combustionPositions = [];
-
-
-// Function to add a new combustion position
-function addCombustionPosition() {
-    // Define the distance from the spaceship's center to the combustion point
-    const combustionDistance = 20; // Adjust as needed
-
-    // Calculate the position of the combustion effect based on the rotation angle
-    const combustionX = spaceshipX + spaceshipWidth / 2 + combustionDistance * Math.cos(rotationAngle);
-    const combustionY = spaceshipY + spaceshipHeight / 2 + combustionDistance * Math.sin(rotationAngle);
-
-    // Add the position to the array
-    combustionPositions.push({ x: combustionX, y: combustionY, frame: 0 });
-}
-
-// Function to draw combustion effect
-function drawCombustion() {
-    if (isCombusting) {
-        // Define the distance from the spaceship's center to the combustion point
-        const combustionDistance = 100; // Adjust as needed
-
-        // Calculate the position of the combustion effect based on the rotation angle
-        const combustionX = spaceshipX + spaceshipWidth / 2 - combustionDistance * Math.sin(rotationAngle);
-        const combustionY = spaceshipY + spaceshipHeight / 2 + combustionDistance * Math.cos(rotationAngle);
-
-        for (let i = 0; i < combustionPositions.length; i++) {
-            const combustion = combustionPositions[i];
-    
-            if (combustion.frame <= maxCombustionFrames) {
-                
-        // You can customize the combustion effect appearance here
-        ctx.beginPath();
-        ctx.arc(combustionX, combustionY, 5, 0, Math.PI * 2);
-        ctx.fillStyle = "orange";
-        ctx.fill();
-        ctx.closePath();
-
-        combustion.frame++;
-        } else {
-            // Remove the combustion position after it exceeds the frame limit
-            combustionPositions.splice(i, 1);
-            i--;
-        }
-    }
-    }
-}
-
-
-// Function to update combustion effect
-function updateCombustion() {
-    if (isCombusting) {
-        combustionFrame++;
-
-        // Reset combustion effect after a certain number of frames
-        if (combustionFrame >= maxCombustionFrames) {
-            isCombusting = false;
-            combustionFrame = 0;
-        }
-    }
-}
-
 // Event listeners
 document.addEventListener("keydown", handleKeyDown);
 document.addEventListener("keyup", handleKeyUp);
@@ -275,6 +244,6 @@ document.addEventListener("keyup", handleKeyUp);
 // Game loop
 setInterval(() => {
     updateCanvas();
-    updateCombustion();
     applyLastDirection();
 }, 10);
+}

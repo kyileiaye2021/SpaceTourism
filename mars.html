@@ -28,6 +28,11 @@
     
 </style>
 <body>
+    <style>
+        body {
+          background-image: url('night.jpeg');
+        }
+        </style>
     <canvas id="gameCanvas" width="1920" height="1080"></canvas>
 
     <div id="myModal" class="modal">
@@ -48,7 +53,9 @@
     <script type="module">
     import * as planetFunctions from './test.js';
        
-       planetFunctions.changeOnlyPlanet(100, "red", "jupiter.html");
+       planetFunctions.changeOnlyPlanet(100, "jupiter.html", "mars.png");
+
+       
     </script>
     
 </body>

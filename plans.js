@@ -1,16 +1,13 @@
-{
+
     const form = document.querySelector('form');
     var arr = [];
     form.addEventListener('submit', (e) => {
-        const form = document.querySelector('form');
-        var arr = [];
         e.preventDefault(); // Prevent HTML refresh
         const fd = new FormData(form); // Converts to array of arrays
-        //document.getElementById("done").innerHTML = fd[1];
         for (item of fd) {
-        alert(item[1]);
+        arr.push(item);
         }
-        
+        document.getElementById("test").innerHTML = "Your flight is scheduled for " + arr[0][1] + " on " + arr[1][1] + " then " + arr[2][1] + " on " + arr[3][1];
+
     });
 
-}
